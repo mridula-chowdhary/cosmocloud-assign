@@ -82,7 +82,7 @@ const EmployeeList = () => {
             <li key={employee._id} className="p-6 bg-white rounded-lg shadow flex justify-between items-center border border-gray-200">
               <div>
                 <p className="text-lg font-semibold text-gray-800">{employee.name}</p>
-                <p className="text-sm text-gray-500">Employee ID: {employee.emp_id || 'N/A'}</p>
+                <p className="text-sm text-gray-500">Employee ID: {employee.emp_id ||  employee._id}</p>
               </div>
               <div className="flex space-x-4">
                 <Link to={`/employee/${employee._id}`} className="text-blue-600 hover:text-blue-800">View Details</Link>

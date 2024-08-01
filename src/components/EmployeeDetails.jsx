@@ -46,7 +46,8 @@ const EmployeeDetails = () => {
           'projectId': '66a9f10939e2fdc09bbba007',
           'environmentId': '66a9f10939e2fdc09bbba008',
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({}) 
       });
 
       if (!response.ok) {
@@ -80,10 +81,10 @@ const EmployeeDetails = () => {
         <p><strong>Employee ID:</strong> {employee.emp_id || employee._id}</p> {/* Use emp_id or fallback to _id */}
         <p><strong>Address:</strong></p>
         <ul className="list-disc list-inside">
-          <li>{employee.address.line1}</li>
-          <li>{employee.address.city}</li>
-          <li>{employee.address.country}</li>
-          <li>{employee.address.zipcode}</li>
+          <li>Line1: {employee.address.line1}</li>
+          <li>City:{employee.address.city}</li>
+          <li>Country:{employee.address.country}</li>
+          <li>Zip Code:{employee.address.zipcode}</li>
         </ul>
       </div>
       <div className="mb-4">
@@ -97,7 +98,7 @@ const EmployeeDetails = () => {
       <div className="flex space-x-4">
         <Link to="/" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Back to Employee List</Link>
         <button
-          onClick={deleteEmployee}
+          onClick={() => deleteEmployee(id)}
           className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
         >
           Delete Employee
