@@ -25,9 +25,8 @@ const EmployeeList = () => {
       }
 
       const data = await response.json();
-      console.log('API response:', data); // Log the entire response
+      console.log('API response:', data);
 
-      // Set employees state with the data array from the response
       if (Array.isArray(data.data)) {
         setEmployees(data.data);
       } else {
@@ -49,7 +48,8 @@ const EmployeeList = () => {
           'projectId': '66a9f10939e2fdc09bbba007',
           'environmentId': '66a9f10939e2fdc09bbba008',
           'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({}) // Sending an empty body
       });
 
       if (!response.ok) {
@@ -64,30 +64,42 @@ const EmployeeList = () => {
   };
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <p className="text-center text-gray-500">Loading...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
+    return <p className="text-center text-red-500">{error}</p>;
   }
 
   return (
-    <div>
-      <h1>Employee List</h1>
+    <div className="max-w-4xl mx-auto mt-8 p-6 bg-gray-50 rounded-lg shadow-md">
+      <h1 className="text-4xl font-bold text-center mb-8 text-gray-800">Employee List</h1>
       {employees.length === 0 ? (
-        <p>No Employees in the system</p>
+        <p className="text-center text-gray-500">No Employees in the system</p>
       ) : (
-        <ul>
+        <ul className="space-y-4">
           {employees.map((employee) => (
-            <li key={employee._id}>
-              {employee.name} - {employee.emp_id || 'N/A'}
-              <Link to={`/employee/${employee._id}`}>View Details</Link>
-              <button onClick={() => deleteEmployee(employee._id)}>Delete</button>
+            <li key={employee._id} className="p-6 bg-white rounded-lg shadow flex justify-between items-center border border-gray-200">
+              <div>
+                <p className="text-lg font-semibold text-gray-800">{employee.name}</p>
+                <p className="text-sm text-gray-500">Employee ID: {employee.emp_id || 'N/A'}</p>
+              </div>
+              <div className="flex space-x-4">
+                <Link to={`/employee/${employee._id}`} className="text-blue-600 hover:text-blue-800">View Details</Link>
+                <button
+                  onClick={() => deleteEmployee(employee._id)}
+                  className="text-red-600 hover:text-red-800"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>
       )}
-      <Link to="/add">Add New Employee</Link>
+      <div className="text-center mt-8">
+        <Link to="/add-employee" className="bg-blue-600 text-white py-2 px-6 rounded-lg shadow hover:bg-blue-700 transition duration-300">Add New Employee</Link>
+      </div>
     </div>
   );
 };
