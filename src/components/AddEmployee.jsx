@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const AddEmployee = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +12,8 @@ const AddEmployee = () => {
     },
     contact_method: [{ contact: '' }]
   });
+
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -48,6 +50,7 @@ const AddEmployee = () => {
       });
       const data = await response.json();
       console.log(data);
+      navigate('/'); 
     } catch (error) {
       console.error('Failed to add employee:', error);
     }
@@ -129,14 +132,12 @@ const AddEmployee = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
         </div>
-        <Link to ='/'>
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 px-4 mt-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Add Employee
         </button>
-        </Link>
       </form>
     </div>
   );
