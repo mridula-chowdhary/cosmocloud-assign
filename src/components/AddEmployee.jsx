@@ -10,30 +10,48 @@ const AddEmployee = () => {
       country: '',
       zipcode: ''
     },
-    contact_method: [{ contact: '' }]
+    contact_method: [{ type: '', value: '' }]
   });
 
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.startsWith('address.')) {
-      const addressField = name.split('.')[1];
+    const nameParts = name.split('.');
+
+    if (nameParts[0] === 'address') {
       setFormData((prevData) => ({
         ...prevData,
-        address: { ...prevData.address, [addressField]: value }
+        address: { ...prevData.address, [nameParts[1]]: value }
       }));
-    } else if (name === 'contact_method') {
-      setFormData((prevData) => ({
-        ...prevData,
-        contact_method: [{ contact: value }]
-      }));
+    } else if (nameParts[0] === 'contact_method') {
+      const index = parseInt(nameParts[1], 10);
+      const key = nameParts[2];
+      setFormData((prevData) => {
+        const newContactMethods = [...prevData.contact_method];
+        newContactMethods[index][key] = value;
+        return { ...prevData, contact_method: newContactMethods };
+      });
     } else {
       setFormData((prevData) => ({
         ...prevData,
         [name]: value
       }));
     }
+  };
+
+  const handleAddContactMethod = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      contact_method: [...prevData.contact_method, { type: '', value: '' }]
+    }));
+  };
+
+  const handleRemoveContactMethod = (index) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      contact_method: prevData.contact_method.filter((_, i) => i !== index)
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -48,9 +66,12 @@ const AddEmployee = () => {
         },
         body: JSON.stringify(formData)
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       console.log(data);
-      navigate('/'); 
+      navigate('/');
     } catch (error) {
       console.error('Failed to add employee:', error);
     }
@@ -120,18 +141,53 @@ const AddEmployee = () => {
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
           />
         </div>
-        <div>
-          <label htmlFor="contact_method" className="block text-sm font-medium text-gray-700">Contact:</label>
-          <input
-            type="text"
-            name="contact_method"
-            id="contact_method"
-            value={formData.contact_method[0].contact}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          />
-        </div>
+        {formData.contact_method.map((method, index) => (
+          <div key={index} className="space-y-2">
+            <div>
+              <label htmlFor={`contact_method.${index}.type`} className="block text-sm font-medium text-gray-700">Contact Method:</label>
+              <select
+                name={`contact_method.${index}.type`}
+                id={`contact_method.${index}.type`}
+                value={method.type}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              >
+                <option value="">Select</option>
+                <option value="EMAIL">EMAIL</option>
+                <option value="PHONE">PHONE</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor={`contact_method.${index}.value`} className="block text-sm font-medium text-gray-700">Value:</label>
+              <input
+                type="text"
+                name={`contact_method.${index}.value`}
+                id={`contact_method.${index}.value`}
+                value={method.value}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              />
+            </div>
+            {formData.contact_method.length > 1 && (
+              <button
+                type="button"
+                onClick={() => handleRemoveContactMethod(index)}
+                className="text-red-600 hover:text-red-800"
+              >
+                Remove
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={handleAddContactMethod}
+          className="bg-green-600 text-white py-2 px-4 rounded-md shadow hover:bg-green-700"
+        >
+          Add Contact Method
+        </button>
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 px-4 mt-4 rounded-md shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -78,27 +78,27 @@ const EmployeeDetails = () => {
       <h1 className="text-2xl font-bold mb-4">Employee Details</h1>
       <div className="mb-4">
         <p><strong>Name:</strong> {employee.name}</p>
-        <p><strong>Employee ID:</strong> {employee.emp_id || employee._id}</p> {/* Use emp_id or fallback to _id */}
+        <p><strong>Employee ID:</strong> {employee.emp_id || employee._id}</p>
         <p><strong>Address:</strong></p>
         <ul className="list-disc list-inside">
           <li>Line1: {employee.address.line1}</li>
-          <li>City:{employee.address.city}</li>
-          <li>Country:{employee.address.country}</li>
-          <li>Zip Code:{employee.address.zipcode}</li>
+          <li>City: {employee.address.city}</li>
+          <li>Country: {employee.address.country}</li>
+          <li>Zip Code: {employee.address.zipcode}</li>
         </ul>
       </div>
       <div className="mb-4">
         <p><strong>Contact Methods:</strong></p>
         <ul className="list-disc list-inside">
           {employee.contact_method.map((method, index) => (
-            <li key={index}>{method.contact}</li>
+            <li key={index}>{method.type}: {method.value}</li>
           ))}
         </ul>
       </div>
       <div className="flex space-x-4">
         <Link to="/" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">Back to Employee List</Link>
         <button
-          onClick={() => deleteEmployee(id)}
+          onClick={deleteEmployee}
           className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
         >
           Delete Employee
